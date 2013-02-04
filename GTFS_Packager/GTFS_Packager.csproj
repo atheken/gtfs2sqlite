@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B51B8E78-7898-4BE1-9F38-2A1B26BAFCF9}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>GTFS_Packager</RootNamespace>
+    <AssemblyName>GTFS_Packager</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Externalconsole>True</Externalconsole>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Externalconsole>True</Externalconsole>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="CsvHelper">
+      <HintPath>..\packages\CsvHelper.1.14.0\lib\net40-client\CsvHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Data.Sqlite" />
+    <Reference Include="System.Web" />
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\packages\DotNetZip.1.9.1.8\lib\net20\Ionic.Zip.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="GTFS_Processor.cs" />
+    <Compile Include="Entities\Agency.cs" />
+    <Compile Include="Entities\Stop.cs" />
+    <Compile Include="Entities\Route.cs" />
+    <Compile Include="Entities\Trip.cs" />
+    <Compile Include="Entities\StopTime.cs" />
+    <Compile Include="Entities\Calendar.cs" />
+    <Compile Include="Entities\CalendarDate.cs" />
+    <Compile Include="Entities\FareAttribute.cs" />
+    <Compile Include="Entities\FareRule.cs" />
+    <Compile Include="Entities\Shape.cs" />
+    <Compile Include="Entities\Frequency.cs" />
+    <Compile Include="Entities\Transfer.cs" />
+    <Compile Include="Entities\FeedInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Entities\" />
+  </ItemGroup>
+</Project>
