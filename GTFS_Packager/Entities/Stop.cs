@@ -1,9 +1,11 @@
 using System;
+using ServiceStack.DataAnnotations;
 
-namespace GTFS_Packager
+namespace GTFSPackager
 {
 	public class Stop
 	{
+		[PrimaryKey]
 		public string stop_id {
 			get;
 			set;

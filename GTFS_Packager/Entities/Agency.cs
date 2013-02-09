@@ -1,9 +1,11 @@
 using System;
+using ServiceStack.DataAnnotations;
 
-namespace GTFS_Packager
+namespace GTFSPackager
 {
 	public class Agency
 	{
+		[PrimaryKey]
 		public string agency_id {
 			get;
 			set;

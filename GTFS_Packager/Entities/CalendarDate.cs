@@ -1,9 +1,13 @@
 using System;
+using ServiceStack.DataAnnotations;
 
-namespace GTFS_Packager
+namespace GTFSPackager
 {
 	public class CalendarDate
 	{
+		[AutoIncrement]
+		public int Id { get; set; }
+
 		public string service_id {
 			get;
 			set;

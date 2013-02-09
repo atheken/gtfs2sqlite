@@ -1,9 +1,13 @@
 using System;
+using ServiceStack.DataAnnotations;
 
-namespace GTFS_Packager
+namespace GTFSPackager
 {
 	public class FareAttribute
 	{
+		[AutoIncrement]
+		public int Id{ get; set; }
+
 		public string currency_type{ get; set; }
 		public string fare_id{ get; set; }
 		public string payment_method{ get; set; }

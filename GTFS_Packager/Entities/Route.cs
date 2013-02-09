@@ -1,10 +1,13 @@
 using System;
+using ServiceStack.DataAnnotations;
 
-namespace GTFS_Packager
+namespace GTFSPackager
 {
 	public class Route
 	{
+		[PrimaryKey]
 		public string route_id{ get; set; }
+
 		public string agency_id{ get; set; }
 		public string route_short_name{ get; set; }
 		public string route_long_name{ get; set; }

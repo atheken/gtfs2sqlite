@@ -1,9 +1,13 @@
 using System;
+using ServiceStack.DataAnnotations;
 
-namespace GTFS_Packager
+namespace GTFSPackager
 {
 	public class StopTime
 	{
+		[AutoIncrement]
+		public int Id { get; set; }
+
 		public string arrival_time{ get; set; }
 		public string departure_time{ get; set; }
 		public string stop_id{ get; set; }
