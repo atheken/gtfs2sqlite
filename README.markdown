@@ -1,0 +1,19 @@
+__What is this?__
+
+[GTFS](https://developers.google.com/transit/gtfs/reference) is a great format for interchange of transportation information. But, due to the format's simple structure (CSV files), there is a tremendous amount of data duplication.
+
+This project is a simple processor that can take a GTFS zip and convert it into a compact sqlite3 database. This makes it a very good choice for mobile applications, where bandwidth matters.
+
+Additionally, the nature of a sqlite3 database is much simpler to query against. Smaller chunks of data can also be plucked from the tables and placed into memory (also constrained on mobile).
+
+In Philadelphia, the bus and rail data is currently over 100MB uncompressed (15MB compressed). By doing some efficient packing and normalizing some of the data, we can get this down to about 35MB in a sqlite db (~10MB when 7zip'ed).
+
+__The code sucks__
+
+Yep. I hacked it together and would like to improve it, but it's adequate for my needs. It's Open Source, feel free to write some tests or do some cleanup.
+
+If you have a clever way to compact the DB further, I am also interested in hearing from you.
+
+__Can it run on Mono?__
+
+Yep, in fact, that's what I used to author this initially.
