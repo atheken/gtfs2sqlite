@@ -1,7 +1,7 @@
 using System;
 using ServiceStack.DataAnnotations;
 
-namespace GTFSPackager
+namespace GTFSPackager.Entities
 {
 	public class Frequency
 	{

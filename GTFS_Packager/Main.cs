@@ -12,7 +12,8 @@ namespace GTFSPackager
 				var processor = new GTFSProcessor ();
 				processor.Package (args [0], args [1]);
 			} else {
-				Console.WriteLine (String.Format ("GTFS Packer usage: {0} <gtfs.zip> <output.db>", Assembly.GetExecutingAssembly ().GetName ()));
+				Console.WriteLine (String.Format ("GTFS Packer usage: {0} <gtfs.zip> <output.db>", 
+				                                  Assembly.GetExecutingAssembly ().GetName ()));
 			}
 		}
 	}

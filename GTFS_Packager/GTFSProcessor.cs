@@ -2,31 +2,37 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using CsvHelper;
 using Ionic;
 using Ionic.Zip;
-using ServiceStack.OrmLite;
+using LINQtoCSV;
 using Mono.Data.Sqlite;
+using ServiceStack.OrmLite;
+using ServiceStack.Text;
+using GTFSPackager.Entities;
+using System.Linq;
+using GTFS_Packager;
+using System.Linq;
 
 namespace GTFSPackager
 {
 	public class GTFSProcessor
 	{
-		private Dictionary<string, Action<String, CsvReader>> _readers;
+		private Dictionary<string, Action<String, Stream>> _readers;
 
 		public GTFSProcessor ()
 		{
-			_readers = new Dictionary<string, Action<String, CsvReader>> (){
+			_readers = new Dictionary<string, Action<String, Stream>> (){
 			{"agency.txt",Process<Agency>},
 			{"stops.txt",Process<Stop>},
 			{"routes.txt",Process<Route>},
 			{"trips.txt",Process<Trip>},
-			{"stop_times.txt",Process<StopTime>},
+			{"stop_times.txt",ProcessStopTime},
+			//{"stop_times.txt",Process<StopTime>},
 			{"calendar.txt",Process<Calendar>},
 			{"calendar_dates.txt",Process<CalendarDate>},
 			{"fare_attributes.txt",Process<FareAttribute>},
 			{"fare_rules.txt",Process<FareRule>},
-			{"shapes.txt",Process<Shape>},
+			{"shapes.txt",ProcessShape},
 			{"frequencies.txt",Process<Frequency>},
 			{"transfers.txt",Process<Transfer>},
 			{"feed_info.txt",Process<FeedInfo>}
@@ -43,34 +49,79 @@ namespace GTFSPackager
 				using (var zipFile = ZipFile.Read(sourceUrl)) {
 					foreach (var entry in zipFile.Entries) {
 						using (var reader  =  entry.OpenReader()) {
-							using (var streamReader = new StreamReader(reader)) {
-
-								var csvReader = new CsvReader (streamReader);
-								csvReader.Configuration.IsStrictMode = false;
-								_readers [entry.FileName] (outputDb, csvReader);
+							using (var ms = new MemoryStream(reader.ReadFully())) {
+								_readers [entry.FileName] (outputDb, ms);
 							}
 						}
 
 					}
 				}
+
+				Process (outputDb, SurrogateKeyRegistry<Headsign>.GetAll ());
+				Process (outputDb, SurrogateKeyRegistry<StopDescription>.GetAll ());
+				Process (outputDb, SurrogateKeyRegistry<StopName>.GetAll ());
+
 			} catch (Exception ex) {
 				Console.WriteLine (ex.Message);
 				Console.WriteLine (ex.StackTrace);
 			}
 		}
 
-		private void Process<T> (string connection, CsvReader reader) where T:class, new()
+		private void Process<T> (string connection, Stream stream) where T:class, new()
 		{
-			var objects = reader.GetRecords<T> ();
+			var objs = new CsvContext ().Read<T> (new StreamReader (stream)).ToArray ();
+			Process (connection, objs);
+		}
+
+		private void ProcessStopTime (string connection, Stream stream)
+		{
+			var objs = new CsvContext ().Read<StopTime> (new StreamReader (stream)).ToArray ();
+			var stopTimes =
+				objs.Where (k => k.trip.HasValue)
+				.GroupBy (j => j.trip)
+				.Select (l => new TripStops (){
+  				TripId = l.Key,
+				Stops = l.OrderBy(k=>k.sequence)
+					.SelectMany(r=> BitConverter.GetBytes(r.stop_id)
+					            .Concat(BitConverter.GetBytes(r.departure))
+						            ).ToArray()
+			}).ToArray ();
+
+			Process (connection, stopTimes);
+		}
+
+		///<summary>
+		/// Packs the shape into a smaller hunk (coordinates are stored in binary) 
+		///</summary>
+		private void ProcessShape (string connection, Stream stream)
+		{
+			var objs = new CsvContext ().Read<Shape> (new StreamReader (stream)).ToArray ();
+			Console.WriteLine ("grouping shapes...");
+			var saveObjects = objs.GroupBy (k => k.shape_id)
+				.Select (shapeGroup => new PackedShape{ ShapeId = shapeGroup.Key, 
+					Coordinates = shapeGroup
+						.OrderBy(l=>l.shape_pt_sequence)
+						.SelectMany(shape=> BitConverter.GetBytes(shape.shape_pt_lat)
+							.Concat(BitConverter.GetBytes(shape.shape_pt_lon))).ToArray()
+				}).ToArray ();
+			Console.WriteLine ("completed grouping shapes...");
+			Process (connection, saveObjects);
+		}
+
+
+		private void Process<T> (string connection, IEnumerable<T> objs) where T:class, new()
+		{
+			Console.WriteLine ("Processing: " + typeof(T).Name); 
 			var factory = new OrmLiteConnectionFactory (connection, SqliteDialect.Provider);
-			using (var db = factory.OpenDbConnection()) {
+			using (var db = factory.OpenDbConnection ()) {
 				using (var tranny = db.BeginTransaction()) {
 					db.CreateTable<T> (true);
-					db.InsertAll (objects);
+					db.InsertAll (objs);
 					tranny.Commit ();
 				}
 			}
 		}
+
 	}
 }
 

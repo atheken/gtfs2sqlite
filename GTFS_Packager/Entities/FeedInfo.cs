@@ -1,12 +1,13 @@
 using System;
 using ServiceStack.DataAnnotations;
 
-namespace GTFSPackager
+namespace GTFSPackager.Entities
 {
 	public class FeedInfo
 	{
 		[AutoIncrement]
 		public int Id { get; set; }
+
 		public string feed_end_date{ get; set; }
 		public string feed_lang{ get; set; }
 		public string feed_publisher_name{ get; set; }

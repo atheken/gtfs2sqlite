@@ -1,12 +1,12 @@
 using System;
 using ServiceStack.DataAnnotations;
 
-namespace GTFSPackager
+namespace GTFSPackager.Entities
 {
 	public class Transfer
 	{
 		[AutoIncrement]
-		public int Id{ get; set; }
+		public int Id { get; set; }
 
 		public string from_stop_id{ get; set; }
 		public string min_transfer_time{ get; set; }

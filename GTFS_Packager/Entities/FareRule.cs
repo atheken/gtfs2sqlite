@@ -1,15 +1,13 @@
 using System;
 using ServiceStack.DataAnnotations;
 
-namespace GTFSPackager
+namespace GTFSPackager.Entities
 {
 	public class FareRule
 	{
 		[AutoIncrement]
-		public int Id {
-			get;
-			set;
-		}
+		public int Id { get; set; }
+
 		public string contains_id{ get; set; }
 		public string destination_id{ get; set; }
 		public string fare_id{ get; set; }
