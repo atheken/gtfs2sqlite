@@ -1,13 +1,10 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="Gtfs2Sqlite" expanded="True">
-            <Node name="Entities" expanded="True" />
-            <Node name="Main.cs" selected="True" />
-          </Node>
+          <Node name="Gtfs2Sqlite" expanded="True" selected="True" />
         </State>
       </Pad>
     </Pads>

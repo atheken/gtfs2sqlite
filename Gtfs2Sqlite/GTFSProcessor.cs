@@ -12,6 +12,7 @@ using ServiceStack.Text;
 using Gtfs2Sqlite.Entities;
 using Gtfs2Sqlite;
 using GtfsEntities;
+using System.Reflection;
 
 namespace Gtfs2Sqlite
 {
@@ -52,14 +53,20 @@ namespace Gtfs2Sqlite
 								_readers [entry.FileName] (outputDb, ms);
 							}
 						}
-
 					}
 				}
+				AddIndices (outputDb);
 			} catch (Exception ex) {
 				ex.PrintDump ();
 				Console.WriteLine (ex.Message);
 				Console.WriteLine (ex.StackTrace);
 			}
+		}
+
+		private void AddIndices (string connection)
+		{
+			//this will use reflection in the future..
+			new StopCoordinatesIndex ().AddIndex (connection);
 		}
 
 		private void Process<T> (string connection, Stream stream) where T:class, new()
@@ -83,7 +90,6 @@ namespace Gtfs2Sqlite
 				}).ToArray ();
 			Process (connection, saveObjects);
 		}
-
 
 		private void Process<T> (string connection, IEnumerable<T> objs) where T:class, new()
 		{

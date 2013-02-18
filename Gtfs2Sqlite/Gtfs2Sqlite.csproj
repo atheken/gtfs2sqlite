@@ -78,10 +78,14 @@
     <Compile Include="Entities\Shape.cs" />
     <Compile Include="Helpers\ShapePoint.cs" />
     <Compile Include="Helpers\ENUMS.cs" />
+    <Compile Include="Helpers\Indexers\IIndexer.cs" />
+    <Compile Include="Helpers\Indexers\BaseIndexer.cs" />
+    <Compile Include="Helpers\Indexers\StopCoordinatesIndex.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Entities\" />
     <Folder Include="Helpers\" />
+    <Folder Include="Helpers\Indexers\" />
   </ItemGroup>
 </Project>
