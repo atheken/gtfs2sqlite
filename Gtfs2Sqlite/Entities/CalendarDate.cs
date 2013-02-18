@@ -10,7 +10,7 @@ namespace Gtfs2Sqlite.Entities
 
 		public string service_id { get; set; }
 		public string date { get; set; }
-		public string exception_type { get; set; }
+		public CalendarExceptionType exception_type { get; set; }
 	}
 }
 

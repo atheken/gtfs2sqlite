@@ -71,18 +71,17 @@
     <Compile Include="Entities\FeedInfo.cs" />
     <Compile Include="Entities\Frequency.cs" />
     <Compile Include="Entities\Route.cs" />
-    <Compile Include="Entities\Shape.cs" />
     <Compile Include="Entities\Stop.cs" />
     <Compile Include="Entities\StopTime.cs" />
     <Compile Include="Entities\Transfer.cs" />
     <Compile Include="Entities\Trip.cs" />
-    <Compile Include="Entities\Helpers\SurrogateKey.cs" />
-    <Compile Include="Entities\PackedShape.cs" />
-    <Compile Include="Entities\TripStops.cs" />
+    <Compile Include="Entities\Shape.cs" />
+    <Compile Include="Helpers\ShapePoint.cs" />
+    <Compile Include="Helpers\ENUMS.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Entities\" />
-    <Folder Include="Entities\Helpers\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
 </Project>

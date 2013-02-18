@@ -11,6 +11,7 @@ using ServiceStack.OrmLite;
 using ServiceStack.Text;
 using Gtfs2Sqlite.Entities;
 using Gtfs2Sqlite;
+using GtfsEntities;
 
 namespace Gtfs2Sqlite
 {
@@ -25,7 +26,7 @@ namespace Gtfs2Sqlite
 			{"stops.txt",Process<Stop>},
 			{"routes.txt",Process<Route>},
 			{"trips.txt",Process<Trip>},
-			{"stop_times.txt",ProcessStopTime},
+			{"stop_times.txt",Process<StopTime>},
 			{"calendar.txt",Process<Calendar>},
 			{"calendar_dates.txt",Process<CalendarDate>},
 			{"fare_attributes.txt",Process<FareAttribute>},
@@ -54,12 +55,8 @@ namespace Gtfs2Sqlite
 
 					}
 				}
-
-				Process (outputDb, SurrogateKeyRegistry<Headsign>.GetAll ());
-				Process (outputDb, SurrogateKeyRegistry<StopDescription>.GetAll ());
-				Process (outputDb, SurrogateKeyRegistry<StopName>.GetAll ());
-
 			} catch (Exception ex) {
+				ex.PrintDump ();
 				Console.WriteLine (ex.Message);
 				Console.WriteLine (ex.StackTrace);
 			}
@@ -71,34 +68,17 @@ namespace Gtfs2Sqlite
 			Process (connection, objs);
 		}
 
-		private void ProcessStopTime (string connection, Stream stream)
-		{
-			var objs = new CsvContext ().Read<StopTime> (new StreamReader (stream)).ToArray ();
-			var stopTimes =
-				objs.Where (k => k.trip.HasValue)
-				.ToLookup (j => j.trip)
-				.Select (l => new TripStops (){
-  				TripId = l.Key,
-				Stops = l.OrderBy(k=>k.sequence)
-					.SelectMany(r=> BitConverter.GetBytes(r.stop_id)
-					            .Concat(BitConverter.GetBytes(r.departure))
-						            ).ToArray()
-			}).ToArray ();
-
-			Process (connection, stopTimes);
-		}
-
 		///<summary>
 		/// Packs the shape into a smaller hunk (coordinates are stored in binary) 
 		///</summary>
 		private void ProcessShape (string connection, Stream stream)
 		{
-			var objs = new CsvContext ().Read<Shape> (new StreamReader (stream)).ToArray ();
+			var objs = new CsvContext ().Read<ShapePoint> (new StreamReader (stream)).ToArray ();
 			var saveObjects = objs.ToLookup (k => k.shape_id)
-				.Select (shapeGroup => new PackedShape{ ShapeName = shapeGroup.Key, 
-					Coordinates = shapeGroup
-						.OrderBy(l=>l.shape_pt_sequence)
-						.SelectMany(shape=> BitConverter.GetBytes(shape.shape_pt_lat)
+				.Select (shapeGroup => new Shape{ 
+						Coordinates = shapeGroup
+							.OrderBy(l=>l.shape_pt_sequence)
+							.SelectMany(shape=> BitConverter.GetBytes(shape.shape_pt_lat)
 							.Concat(BitConverter.GetBytes(shape.shape_pt_lon))).ToArray()
 				}).ToArray ();
 			Process (connection, saveObjects);
@@ -109,6 +89,7 @@ namespace Gtfs2Sqlite
 		{
 			Console.WriteLine ("Processing: " + typeof(T).Name); 
 			var factory = new OrmLiteConnectionFactory (connection, SqliteDialect.Provider);
+
 			using (var db = factory.OpenDbConnection ()) {
 				using (var tranny = db.BeginTransaction()) {
 					db.CreateTable<T> (true);

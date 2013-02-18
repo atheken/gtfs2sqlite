@@ -6,18 +6,19 @@ namespace Gtfs2Sqlite.Entities
 	public class Calendar
 	{
 		[AutoIncrement]
-		public int Id { get; set; }
+		public int id { get; set; }
 
-		public string end_date{ get; set; }
-		public string friday{ get; set; }
-		public string monday{ get; set; }
-		public string saturday{ get; set; }
+		//required
 		public string service_id{ get; set; }
 		public string start_date{ get; set; }
-		public string sunday{ get; set; }
-		public string thursday{ get; set; }
-		public string tuesday{ get; set; }
-		public string wednesday{ get; set; }
+		public string end_date{ get; set; }
+		public byte sunday{ get; set; }
+		public byte monday{ get; set; }
+		public byte tuesday{ get; set; }
+		public byte wednesday{ get; set; }
+		public byte thursday{ get; set; }
+		public byte friday{ get; set; }
+		public byte saturday{ get; set; }
 	}
 }
 

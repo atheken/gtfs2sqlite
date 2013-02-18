@@ -1,17 +1,13 @@
 using System;
 using ServiceStack.DataAnnotations;
 
-namespace Gtfs2Sqlite.Entities
+namespace Gtfs2Sqlite
 {
 	public class Shape
 	{
-		public string shape_id{ get; set; }
-
-		public double? shape_dist_traveled{ get; set; }
-
-		public double shape_pt_lat{ get; set; }
-		public double shape_pt_lon{ get; set; }
-		public int shape_pt_sequence{ get; set; }
+		[PrimaryKey]
+		public string shape_id { get; set; }
+		public byte[] Coordinates { get; set; }
 	}
 }
 

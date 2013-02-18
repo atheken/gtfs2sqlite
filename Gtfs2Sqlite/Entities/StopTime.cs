@@ -8,63 +8,24 @@ namespace Gtfs2Sqlite.Entities
 {
 	public class StopTime
 	{
-		private Lazy<int?> _trip_id_lookup;
-
-		public StopTime ()
-		{
-			_trip_id_lookup = new Lazy<int?> (() => SurrogateKeyRegistry<TripName>.GetValueForKey (trip_id));
-		}
-
 		[AutoIncrement]
-		public int Id { get; set; }
+		public int id { get; set; }
 
-		[Ignore]
-		public string trip_id	{ get; set; }
+		//required
+		public string trip_id { get; set; }
+		//See this for details: https://developers.google.com/transit/gtfs/reference#stop_times_fields
+		public string arrival_time { get; set; }
+		public string stop_id { get; set; }
+		//making an assumption that a trip will have < 512 stops, saves lots of space.
+		public byte stop_sequence { get; set; }
 
-		public int? trip {
-			get { 
-				return _trip_id_lookup.Value;
-			}
-		}
 
-		[Ignore]
-		public string arrival_time{ get; set; }
-
-		[Ignore]
-		public string departure_time{ get; set; }
-
-		public short departure {
-			get {
-				var times = departure_time.Split (':');
-				const short minutesPerHour = 60;
-				return (short)(short.Parse (times [0]) * minutesPerHour + short.Parse (times [1]));
-			}
-		}
-
-		public int stop_id{ get; set; }
-
-		[Ignore]
-		public string stop_sequence{ get; set; }
-
-		public short? sequence {
-			get {
-				short? retval = null;
-				short parsed;
-				if (short.TryParse (stop_sequence, out parsed)) {
-					retval = parsed;
-				}
-				return retval;
-			}
-		}
-
-		public string stop_headsign{ get; set; }
-
-		public string pickup_type{ get; set; }
-
-		public string drop_off_type{ get; set; }
-
-		[Ignore]
-		public double? shape_dist_traveled{ get; set; }
+		//optional
+		public string departure_time { get; set; }
+		public string stop_headsign { get; set; }
+		public PickupDropoffType? pickup_type { get; set; }
+		public PickupDropoffType? drop_off_type { get; set; }
+		public float? shape_dist_traveled { get; set; }
 	}
 }
 
