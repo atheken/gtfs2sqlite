@@ -11,12 +11,12 @@ namespace Gtfs2Sqlite
 		{
 			var factory = new OrmLiteConnectionFactory (connection, SqliteDialect.Provider);
 			using (var db = factory.OpenDbConnection()) {
-				using (var tranny = db.BeginTransaction()) {
-					db.ExecuteSql ("CREATE INDEX IF NOT EXISTS " + this.GetType ().Name.ToLower () + 
+				using (var transaction = db.BeginTransaction()) {
+					db.ExecuteSql ("CREATE INDEX IF NOT EXISTS " + this.GetType ().Name.ToLower () +
 						" ON " + typeof(T).Name.ToLower () + "(" +
-						GetFieldsToIndex ().Aggregate ("", 
+						GetFieldsToIndex ().Aggregate ("",
 						(seed, current) => seed += "," + current).Trim (',') + ");");
-					tranny.Commit ();
+					transaction.Commit ();
 				}
 			}
 		}
@@ -24,4 +24,3 @@ namespace Gtfs2Sqlite
 		protected abstract IEnumerable<String> GetFieldsToIndex ();
 	}
 }
-

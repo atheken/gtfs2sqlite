@@ -76,13 +76,13 @@ namespace Gtfs2Sqlite
 		}
 
 		///<summary>
-		/// Packs the shape into a smaller hunk (coordinates are stored in binary) 
+		/// Packs the shape into a smaller hunk (coordinates are stored in binary)
 		///</summary>
 		private void ProcessShape (string connection, Stream stream)
 		{
 			var objs = new CsvContext ().Read<ShapePoint> (new StreamReader (stream)).ToArray ();
 			var saveObjects = objs.ToLookup (k => k.shape_id)
-				.Select (shapeGroup => new Shape{ 
+				.Select (shapeGroup => new Shape{
 						Coordinates = shapeGroup
 							.OrderBy(l=>l.shape_pt_sequence)
 							.SelectMany(shape=> BitConverter.GetBytes(shape.shape_pt_lat)
@@ -93,18 +93,17 @@ namespace Gtfs2Sqlite
 
 		private void Process<T> (string connection, IEnumerable<T> objs) where T:class, new()
 		{
-			Console.WriteLine ("Processing: " + typeof(T).Name); 
+			Console.WriteLine ("Processing: " + typeof(T).Name);
 			var factory = new OrmLiteConnectionFactory (connection, SqliteDialect.Provider);
 
 			using (var db = factory.OpenDbConnection ()) {
-				using (var tranny = db.BeginTransaction()) {
+				using (var transaction = db.BeginTransaction()) {
 					db.CreateTable<T> (true);
 					db.InsertAll (objs);
-					tranny.Commit ();
+					transaction.Commit ();
 				}
 			}
 		}
 
 	}
 }
-
